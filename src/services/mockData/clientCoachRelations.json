@@ -1,0 +1,23 @@
+[
+  {
+    "Id": 1,
+    "clientId": "2",
+    "coachId": "1",
+    "status": "active",
+    "startDate": "2024-01-20T10:30:00Z"
+  },
+  {
+    "Id": 2,
+    "clientId": "3",
+    "coachId": "1",
+    "status": "active",
+    "startDate": "2024-01-25T14:15:00Z"
+  },
+  {
+    "Id": 3,
+    "clientId": "4",
+    "coachId": "1",
+    "status": "paused",
+    "startDate": "2024-02-01T09:45:00Z"
+  }
+]

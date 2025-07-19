@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "coachId": "1",
+    "clientId": "2",
+    "dateTime": "2024-02-26T10:00:00Z",
+    "duration": 60,
+    "status": "scheduled"
+  },
+  {
+    "Id": 2,
+    "coachId": "1",
+    "clientId": "3",
+    "dateTime": "2024-02-27T14:30:00Z",
+    "duration": 45,
+    "status": "scheduled"
+  },
+  {
+    "Id": 3,
+    "coachId": "1",
+    "clientId": "2",
+    "dateTime": "2024-02-23T15:00:00Z",
+    "duration": 60,
+    "status": "completed"
+  },
+  {
+    "Id": 4,
+    "coachId": "1",
+    "clientId": "4",
+    "dateTime": "2024-02-28T11:00:00Z",
+    "duration": 60,
+    "status": "cancelled"
+  }
+]

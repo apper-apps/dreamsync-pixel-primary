@@ -1,0 +1,42 @@
+[
+  {
+    "Id": 1,
+    "senderId": "2",
+    "receiverId": "1",
+    "content": "Hi Dr. Wilson, I had trouble sleeping last night. Should I adjust my routine?",
+    "timestamp": "2024-02-22T08:30:00Z",
+    "read": true
+  },
+  {
+    "Id": 2,
+    "senderId": "1",
+    "receiverId": "2",
+    "content": "Hi John! Let's review your sleep diary from last night. Can you tell me what might have been different about yesterday?",
+    "timestamp": "2024-02-22T09:15:00Z",
+    "read": true
+  },
+  {
+    "Id": 3,
+    "senderId": "2",
+    "receiverId": "1",
+    "content": "I had coffee later than usual - around 4pm. Could that have affected my sleep?",
+    "timestamp": "2024-02-22T09:45:00Z",
+    "read": true
+  },
+  {
+    "Id": 4,
+    "senderId": "1",
+    "receiverId": "2",
+    "content": "Absolutely! Caffeine can stay in your system for 6-8 hours. Try to avoid caffeine after 2pm and see how that affects your sleep tonight.",
+    "timestamp": "2024-02-22T10:00:00Z",
+    "read": false
+  },
+  {
+    "Id": 5,
+    "senderId": "3",
+    "receiverId": "1",
+    "content": "The relaxation exercises you recommended are really helping! My sleep quality has improved.",
+    "timestamp": "2024-02-21T16:20:00Z",
+    "read": true
+  }
+]

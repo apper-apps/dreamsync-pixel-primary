@@ -1,0 +1,38 @@
+[
+  {
+    "Id": 1,
+    "email": "sarah.coach@dreamsync.com",
+    "name": "Dr. Sarah Wilson",
+    "phone": "(555) 123-4567",
+    "timezone": "EST",
+    "role": "coach",
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "Id": 2,
+    "email": "john.client@email.com",
+    "name": "John Matthews",
+    "phone": "(555) 234-5678",
+    "timezone": "EST",
+    "role": "client",
+    "createdAt": "2024-01-20T10:30:00Z"
+  },
+  {
+    "Id": 3,
+    "email": "emma.client@email.com",
+    "name": "Emma Thompson",
+    "phone": "(555) 345-6789",
+    "timezone": "PST",
+    "role": "client",
+    "createdAt": "2024-01-25T14:15:00Z"
+  },
+  {
+    "Id": 4,
+    "email": "mike.client@email.com",
+    "name": "Michael Chen",
+    "phone": "(555) 456-7890",
+    "timezone": "EST",
+    "role": "client",
+    "createdAt": "2024-02-01T09:45:00Z"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": 1,
+    "coachId": "1",
+    "clientId": "2",
+    "date": "2024-02-15T10:00:00Z",
+    "notes": "Initial assessment completed. Client reports difficulty falling asleep and frequent wake-ups. Discussed sleep hygiene basics.",
+    "goals": ["Establish consistent bedtime routine", "Reduce screen time before bed", "Track sleep patterns"]
+  },
+  {
+    "Id": 2,
+    "coachId": "1",
+    "clientId": "3",
+    "date": "2024-02-14T14:30:00Z",
+    "notes": "Follow-up session. Client shows improvement in sleep onset time. Continue with current strategies.",
+    "goals": ["Maintain current routine", "Introduce relaxation techniques"]
+  },
+  {
+    "Id": 3,
+    "coachId": "1",
+    "clientId": "2",
+    "date": "2024-02-22T10:00:00Z",
+    "notes": "Week 2 progress review. Sleep diary shows 20% improvement in sleep quality scores.",
+    "goals": ["Continue sleep hygiene practices", "Add meditation before bed"]
+  }
+]
