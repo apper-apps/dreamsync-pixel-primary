@@ -27,7 +27,7 @@ const SleepDiary = () => {
   const [isDuplicate, setIsDuplicate] = useState(false)
 const [validationErrors, setValidationErrors] = useState({})
   const [calendarDate, setCalendarDate] = useState(new Date())
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     date: format(new Date(), "yyyy-MM-dd"),
     bedTime: "",
     tryToSleepTime: "",
@@ -36,10 +36,15 @@ const [validationErrors, setValidationErrors] = useState({})
     finalWakeTime: "",
     outOfBedTime: "",
     sleepQuality: 5,
-    notes: ""
+    sleepMedications: "no",
+    naps: "no",
+    alcohol: "no",
+    caffeine: "no",
+    notes: "",
+    dailyGoals: ""
   })
 
-  const totalSteps = 8
+  const totalSteps = 14
   const clientId = "2" // Mock client ID - in real app this would come from auth
   
   const initialFormData = {
@@ -51,13 +56,18 @@ const [validationErrors, setValidationErrors] = useState({})
     finalWakeTime: "",
     outOfBedTime: "",
     sleepQuality: 5,
-    notes: ""
+    sleepMedications: "no",
+    naps: "no", 
+    alcohol: "no",
+    caffeine: "no",
+    notes: "",
+    dailyGoals: ""
   }
 
-  const questions = [
+const questions = [
     {
       id: "date",
-      title: "Today's Date",
+      title: "Today's date",
       subtitle: "When did this sleep period occur?",
       type: "date",
       required: true,
@@ -65,8 +75,8 @@ const [validationErrors, setValidationErrors] = useState({})
     },
     {
       id: "bedTime",
-      title: "Bedtime",
-      subtitle: "When you got into bed last night",
+      title: "Bedtime (when you got into bed last night)",
+      subtitle: "What time did you get into bed last night?",
       type: "time",
       required: true,
       icon: "Moon"
@@ -81,8 +91,8 @@ const [validationErrors, setValidationErrors] = useState({})
     },
     {
       id: "minutesToFallAsleep",
-      title: "Time to fall asleep",
-      subtitle: "Approximately how long did it take you to fall asleep? (minutes)",
+      title: "Approximately how long did it take you to fall asleep? (minutes)",
+      subtitle: "Time from trying to sleep until you fell asleep",
       type: "number",
       min: 0,
       max: 300,
@@ -91,8 +101,8 @@ const [validationErrors, setValidationErrors] = useState({})
     },
     {
       id: "nightWakeups",
-      title: "Night wakings",
-      subtitle: "How many times do you remember waking during the night?",
+      title: "How many times do you remember waking during the night?",
+      subtitle: "Number of times you woke up during the night",
       type: "number",
       min: 0,
       max: 20,
@@ -101,76 +111,96 @@ const [validationErrors, setValidationErrors] = useState({})
     },
     {
       id: "finalWakeTime",
-      title: "Final wake time",
-      subtitle: "What time was your final wakeup today?",
+      title: "What time was your final wakeup today?",
+      subtitle: "The last time you woke up this morning",
       type: "time",
       required: true,
       icon: "Sun"
     },
     {
       id: "outOfBedTime",
-      title: "Out of bed time",
-      subtitle: "What time did you get out of bed for good today?",
+      title: "What time did you get out of bed for good today?",
+      subtitle: "When you got out of bed and stayed up",
       type: "time",
       required: true,
       icon: "ArrowUp"
     },
     {
       id: "sleepQuality",
-      title: "Sleep quality rating",
-      subtitle: "How would you rate last night's sleep quality?",
+      title: "How would you rate last night's sleep quality? (1-10 scale)",
+      subtitle: "Rate your overall sleep quality from 1 (very poor) to 10 (excellent)",
       type: "range",
       min: 1,
       max: 10,
       required: true,
       icon: "Star"
+    },
+    {
+      id: "sleepMedications",
+      title: "Did you take any sleep medications, aids, or supplements last night? (Yes/No)",
+      subtitle: "Including prescription medications, over-the-counter aids, or supplements",
+      type: "select",
+      options: [
+        { value: "no", label: "No" },
+        { value: "yes", label: "Yes" }
+      ],
+      required: true,
+      icon: "Pill"
+    },
+    {
+      id: "naps",
+      title: "Did you take any naps yesterday or doze off in the evening? (Yes/No)",
+      subtitle: "Any daytime sleep or evening dozing before bedtime",
+      type: "select",
+      options: [
+        { value: "no", label: "No" },
+        { value: "yes", label: "Yes" }
+      ],
+      required: true,
+      icon: "Moon"
+    },
+    {
+      id: "alcohol",
+      title: "Did you have any alcoholic drinks yesterday? (Yes/No)",
+      subtitle: "Any alcohol consumption during the day or evening",
+      type: "select",
+      options: [
+        { value: "no", label: "No" },
+        { value: "yes", label: "Yes" }
+      ],
+      required: true,
+      icon: "Wine"
+    },
+    {
+      id: "caffeine",
+      title: "Did you have any caffeinated drinks yesterday? (Yes/No)",
+      subtitle: "Coffee, tea, soda, energy drinks, or other caffeinated beverages",
+      type: "select",
+      options: [
+        { value: "no", label: "No" },
+        { value: "yes", label: "Yes" }
+      ],
+      required: true,
+      icon: "Coffee"
+    },
+    {
+      id: "notes",
+      title: "Additional notes about your sleep (Optional)",
+      subtitle: "Any other observations or factors that may have affected your sleep",
+      type: "textarea",
+      required: false,
+      icon: "FileText"
+    },
+    {
+      id: "dailyGoals",
+      title: "Daily Goals Check-in (placeholder text for now)",
+      subtitle: "Review your daily goals and progress",
+      type: "textarea",
+      required: false,
+      icon: "Target"
     }
   ]
 
-  // Auto-save functionality
-const triggerAutoSave = useCallback(() => {
-    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
-    
-    const timer = setTimeout(() => {
-      const hasRequiredFields = formData.date && formData.bedTime && formData.finalWakeTime
-      if (hasRequiredFields) {
-        localStorage.setItem(`sleep-diary-draft-${clientId}`, JSON.stringify({
-          ...formData,
-          timestamp: new Date().toISOString()
-        }))
-      }
-    }, 30000) // 30 seconds
-    
-    autoSaveTimerRef.current = timer
-  }, [formData, clientId])
-
-  useEffect(() => {
-    triggerAutoSave()
-    return () => {
-      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
-    }
-  }, [formData, triggerAutoSave])
-  // Load draft on mount
-  useEffect(() => {
-    const draft = localStorage.getItem(`sleep-diary-draft-${clientId}`)
-    if (draft && !editingEntry) {
-      try {
-        const parsed = JSON.parse(draft)
-        const draftAge = new Date() - new Date(parsed.timestamp)
-        // Use draft if less than 24 hours old
-        if (draftAge < 24 * 60 * 60 * 1000) {
-          setFormData(prev => ({
-            ...prev,
-            ...parsed,
-            timestamp: undefined
-          }))
-          toast.info("Restored your draft from auto-save")
-        }
-      } catch (err) {
-        console.warn("Failed to load draft:", err)
-      }
-    }
-  }, [clientId, editingEntry])
 
   const loadEntries = async () => {
     try {
@@ -196,7 +226,7 @@ const triggerAutoSave = useCallback(() => {
     localStorage.setItem('sleep-diary-step-mode', JSON.stringify(isStepMode))
   }, [isStepMode])
 
-  const handleInputChange = (e) => {
+const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -277,11 +307,7 @@ const triggerAutoSave = useCallback(() => {
       } else {
         await sleepEntryService.create(entryData)
         toast.success("Sleep entry added successfully")
-      }
-      
-      // Clear draft
-      localStorage.removeItem(`sleep-diary-draft-${clientId}`)
-      
+}
       resetForm()
       loadEntries()
     } catch (err) {
@@ -297,7 +323,6 @@ const resetForm = () => {
     setIsEditing(false)
     setEditingEntry(null)
     setCurrentStep(1)
-    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
   }
 
   const handleEdit = (entry) => {
@@ -516,6 +541,34 @@ const resetForm = () => {
               <span>Excellent</span>
             </div>
           </div>
+) : question.type === "select" ? (
+          <div className="max-w-md mx-auto">
+            <select
+              name={question.id}
+              value={value}
+              onChange={handleInputChange}
+              required={question.required}
+              className="w-full px-4 py-3 text-center text-lg border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              {question.options.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : question.type === "textarea" ? (
+          <div className="max-w-md mx-auto">
+            <textarea
+              name={question.id}
+              value={value}
+              onChange={handleInputChange}
+              required={question.required}
+              rows={3}
+              className="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              placeholder={question.required ? "Required field" : "Optional notes..."}
+            />
+          </div>
         ) : (
           <div className="max-w-md mx-auto">
             <Input
@@ -622,9 +675,9 @@ const resetForm = () => {
         </Button>
       </div>
       
-      <form onSubmit={handleSubmit} className="space-y-6">
+<form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {questions.slice(0, 7).map((question, index) => (
+          {questions.map((question, index) => (
             <div key={question.id}>
               {question.type === "range" ? (
                 <div>
@@ -645,6 +698,40 @@ const resetForm = () => {
                     <span>Excellent</span>
                   </div>
                 </div>
+              ) : question.type === "select" ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {question.title}
+                  </label>
+                  <select
+                    name={question.id}
+                    value={formData[question.id]}
+                    onChange={handleInputChange}
+                    required={question.required}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  >
+                    {question.options.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : question.type === "textarea" ? (
+                <div className="md:col-span-2 lg:col-span-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {question.title}
+                  </label>
+                  <textarea
+                    name={question.id}
+                    value={formData[question.id]}
+                    onChange={handleInputChange}
+                    required={question.required}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    placeholder={question.required ? "Required field" : "Optional notes..."}
+                  />
+                </div>
               ) : (
                 <Input
                   label={question.title}
@@ -660,21 +747,6 @@ const resetForm = () => {
             </div>
           ))}
         </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Notes (Optional)
-          </label>
-          <textarea
-            name="notes"
-            value={formData.notes}
-            onChange={handleInputChange}
-            rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            placeholder="Any additional notes about your sleep..."
-          />
-        </div>
-        
         <div className="flex space-x-3">
           <Button type="submit" className="flex-1 bg-gradient-to-r from-primary-600 to-secondary-600">
             <ApperIcon name="Save" className="w-4 h-4 mr-2" />
