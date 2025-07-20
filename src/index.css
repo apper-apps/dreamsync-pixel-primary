@@ -48,3 +48,77 @@
 .Toastify__progress-bar {
   background: rgba(255, 255, 255, 0.7);
 }
+
+/* Sleep Diary Custom Styles */
+.sleep-quality-slider {
+  background: linear-gradient(to right, #ef4444, #f59e0b, #10b981);
+}
+
+.sleep-quality-slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #7c3aed;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.sleep-quality-slider::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #7c3aed;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+/* Calendar Grid Responsive */
+@media (max-width: 640px) {
+  .calendar-day {
+    min-height: 40px;
+    font-size: 12px;
+  }
+  
+  .calendar-day .quality-dot {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Step Navigation Animations */
+.step-enter {
+  opacity: 0;
+  transform: translateX(100px);
+}
+
+.step-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.step-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.step-exit-active {
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Mobile Touch Targets */
+@media (max-width: 768px) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .mobile-form-spacing > * + * {
+    margin-top: 1.5rem;
+  }
+}
