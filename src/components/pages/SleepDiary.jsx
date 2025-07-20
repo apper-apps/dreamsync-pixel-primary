@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useCallback } from "react"
-import Card from "@/components/atoms/Card"
-import Button from "@/components/atoms/Button"
-import Input from "@/components/atoms/Input"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import Empty from "@/components/ui/Empty"
-import ApperIcon from "@/components/ApperIcon"
-import { sleepEntryService } from "@/services/api/sleepEntryService"
-import { format, subDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, isSameDay } from "date-fns"
-import { toast } from "react-toastify"
+import React, { useCallback, useEffect, useState, useRef } from "react";
+import { eachDayOfInterval, endOfMonth, format, isSameDay, isSameMonth, isToday, startOfMonth, subDays } from "date-fns";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+import { sleepEntryService } from "@/services/api/sleepEntryService";
 
 const SleepDiary = () => {
   const [entries, setEntries] = useState([])
@@ -21,10 +21,12 @@ const SleepDiary = () => {
     const saved = localStorage.getItem('sleep-diary-step-mode')
     return saved ? JSON.parse(saved) : true
   })
-  const [calendarDate, setCalendarDate] = useState(new Date())
-  const [autoSaveTimer, setAutoSaveTimer] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
   const [editingEntry, setEditingEntry] = useState(null)
-  
+  const autoSaveTimerRef = useRef(null)
+  const [isDuplicate, setIsDuplicate] = useState(false)
+const [validationErrors, setValidationErrors] = useState({})
+  const [calendarDate, setCalendarDate] = useState(new Date())
   const [formData, setFormData] = useState({
     date: format(new Date(), "yyyy-MM-dd"),
     bedTime: "",
@@ -39,6 +41,18 @@ const SleepDiary = () => {
 
   const totalSteps = 8
   const clientId = "2" // Mock client ID - in real app this would come from auth
+  
+  const initialFormData = {
+    date: format(new Date(), "yyyy-MM-dd"),
+    bedTime: "",
+    tryToSleepTime: "",
+    minutesToFallAsleep: "",
+    nightWakeups: "",
+    finalWakeTime: "",
+    outOfBedTime: "",
+    sleepQuality: 5,
+    notes: ""
+  }
 
   const questions = [
     {
@@ -114,8 +128,8 @@ const SleepDiary = () => {
   ]
 
   // Auto-save functionality
-  const triggerAutoSave = useCallback(() => {
-    if (autoSaveTimer) clearTimeout(autoSaveTimer)
+const triggerAutoSave = useCallback(() => {
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
     
     const timer = setTimeout(() => {
       const hasRequiredFields = formData.date && formData.bedTime && formData.finalWakeTime
@@ -127,16 +141,15 @@ const SleepDiary = () => {
       }
     }, 30000) // 30 seconds
     
-    setAutoSaveTimer(timer)
-  }, [formData, autoSaveTimer, clientId])
+    autoSaveTimerRef.current = timer
+  }, [formData, clientId])
 
   useEffect(() => {
     triggerAutoSave()
     return () => {
-      if (autoSaveTimer) clearTimeout(autoSaveTimer)
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
     }
   }, [formData, triggerAutoSave])
-
   // Load draft on mount
   useEffect(() => {
     const draft = localStorage.getItem(`sleep-diary-draft-${clientId}`)
@@ -278,22 +291,13 @@ const SleepDiary = () => {
     }
   }
 
-  const resetForm = () => {
-    setFormData({
-      date: format(new Date(), "yyyy-MM-dd"),
-      bedTime: "",
-      tryToSleepTime: "",
-      minutesToFallAsleep: "",
-      nightWakeups: "",
-      finalWakeTime: "",
-      outOfBedTime: "",
-      sleepQuality: 5,
-      notes: ""
-    })
+const resetForm = () => {
+    setFormData({ ...initialFormData, date: format(new Date(), 'yyyy-MM-dd') })
     setShowForm(false)
+    setIsEditing(false)
     setEditingEntry(null)
     setCurrentStep(1)
-    if (autoSaveTimer) clearTimeout(autoSaveTimer)
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
   }
 
   const handleEdit = (entry) => {
