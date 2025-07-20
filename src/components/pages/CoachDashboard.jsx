@@ -11,14 +11,16 @@ import { appointmentService } from "@/services/api/appointmentService"
 import { sessionService } from "@/services/api/sessionService"
 import { messageService } from "@/services/api/messageService"
 import { relationService } from "@/services/api/relationService"
+import { goalService } from "@/services/api/goalService"
 import { format } from "date-fns"
 
 const CoachDashboard = () => {
-  const [dashboardData, setDashboardData] = useState({
+const [dashboardData, setDashboardData] = useState({
     stats: null,
     recentClients: [],
     upcomingAppointments: [],
-    recentMessages: []
+    recentMessages: [],
+    recentGoals: []
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -31,21 +33,25 @@ const CoachDashboard = () => {
       // Mock coach ID - in real app this would come from auth
       const coachId = "1"
 
-      const [
+const [
         clients,
         appointments, 
         sessions,
         messages,
-        relations
+        relations,
+        allGoals,
+        goalAssignments
       ] = await Promise.all([
         userService.getByRole("client"),
         appointmentService.getByCoach(coachId),
         sessionService.getByCoach(coachId),
         messageService.getAll(),
-        relationService.getByCoach(coachId)
+        relationService.getByCoach(coachId),
+        goalService.getAll(),
+        goalService.getAssignments()
       ])
 
-      // Calculate stats
+// Calculate stats
       const activeClients = relations.filter(r => r.status === "active").length
       const upcomingAppts = appointments.filter(a => 
         new Date(a.dateTime) > new Date() && a.status === "scheduled"
@@ -54,8 +60,10 @@ const CoachDashboard = () => {
       const unreadMessages = messages.filter(m => 
         m.receiverId === coachId && !m.read
       ).length
+      const activeGoals = allGoals.filter(g => g.active).length
+      const assignedGoals = goalAssignments.length
 
-      // Get recent data
+// Get recent data
       const recentClients = clients.slice(0, 3)
       const upcomingAppointments = appointments
         .filter(a => new Date(a.dateTime) > new Date() && a.status === "scheduled")
@@ -67,16 +75,23 @@ const CoachDashboard = () => {
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         .slice(0, 3)
 
-      setDashboardData({
+      const recentGoals = allGoals
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 3)
+
+setDashboardData({
         stats: {
           activeClients,
           upcomingAppts,
           completedSessions,
-          unreadMessages
+          unreadMessages,
+          activeGoals,
+          assignedGoals
         },
         recentClients,
         upcomingAppointments,
-        recentMessages
+        recentMessages,
+        recentGoals
       })
     } catch (err) {
       setError("Failed to load dashboard data")
@@ -93,7 +108,7 @@ const CoachDashboard = () => {
   if (loading) return <Loading />
   if (error) return <Error message={error} onRetry={loadDashboardData} />
 
-  const { stats, recentClients, upcomingAppointments, recentMessages } = dashboardData
+const { stats, recentClients, upcomingAppointments, recentMessages, recentGoals } = dashboardData
 
   return (
     <div className="space-y-6">
@@ -268,6 +283,83 @@ const CoachDashboard = () => {
                 {!message.read && (
                   <div className="w-2 h-2 bg-primary-500 rounded-full flex-shrink-0 mt-2"></div>
                 )}
+              </div>
+            ))}
+          </div>
+)}
+      </Card>
+
+      {/* Goals Overview */}
+      <Card>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold font-display text-gray-900">
+            Goals Management
+          </h3>
+          <Button variant="ghost" size="sm">
+            Manage Goals
+            <ApperIcon name="Target" className="w-4 h-4 ml-1" />
+          </Button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-green-800">Active Goals</p>
+                <p className="text-2xl font-bold text-green-900">{stats?.activeGoals || 0}</p>
+              </div>
+              <div className="p-2 bg-green-100 rounded-lg">
+                <ApperIcon name="Target" className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-blue-800">Client Assignments</p>
+                <p className="text-2xl font-bold text-blue-900">{stats?.assignedGoals || 0}</p>
+              </div>
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <ApperIcon name="Users" className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {recentGoals && recentGoals.length === 0 ? (
+          <Empty 
+            title="No goals created yet"
+            description="Start building your goals library to help clients achieve better sleep"
+            icon="Target"
+            actionText="Create First Goal"
+          />
+        ) : (
+          <div className="space-y-4">
+            <h4 className="text-sm font-medium text-gray-700 mb-3">Recent Goals</h4>
+            {recentGoals?.map((goal) => (
+              <div key={goal.Id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-primary-100 rounded-lg">
+                    <ApperIcon name="Target" className="w-4 h-4 text-primary-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">{goal.title}</p>
+                    <p className="text-sm text-gray-500">{goal.category}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                    goal.active 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {goal.active ? 'Active' : 'Inactive'}
+                  </span>
+                  <Button variant="ghost" size="sm" className="p-1">
+                    <ApperIcon name="MoreHorizontal" className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

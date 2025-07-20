@@ -1,0 +1,102 @@
+[
+  {
+    "Id": 1,
+    "clientId": "2",
+    "goalId": 1,
+    "milestoneType": "first_completion",
+    "message": "🎉 Great job maintaining your bedtime tonight!",
+    "achievedAt": "2024-01-21T07:00:00.000Z",
+    "displayType": "toast",
+    "viewed": true
+  },
+  {
+    "Id": 2,
+    "clientId": "2",
+    "goalId": 2,
+    "milestoneType": "first_completion",
+    "message": "🎉 Wonderful! Your first wind-down routine is complete!",
+    "achievedAt": "2024-01-21T07:05:00.000Z",
+    "displayType": "toast",
+    "viewed": true
+  },
+  {
+    "Id": 3,
+    "clientId": "2",
+    "goalId": 3,
+    "milestoneType": "first_completion",
+    "message": "📱❌ Excellent choice! Your brain will thank you tonight!",
+    "achievedAt": "2024-01-22T07:20:00.000Z",
+    "displayType": "toast",
+    "viewed": true
+  },
+  {
+    "Id": 4,
+    "clientId": "2",
+    "goalId": 5,
+    "milestoneType": "first_completion",
+    "message": "☀️ Brilliant! You've given your circadian rhythm the perfect morning signal!",
+    "achievedAt": "2024-01-22T19:00:00.000Z",
+    "displayType": "toast",
+    "viewed": true
+  },
+  {
+    "Id": 5,
+    "clientId": "2",
+    "goalId": 7,
+    "milestoneType": "first_completion",
+    "message": "☕ Excellent discipline! Your evening sleep will be so much better without late caffeine!",
+    "achievedAt": "2024-01-24T07:10:00.000Z",
+    "displayType": "toast",
+    "viewed": false
+  },
+  {
+    "Id": 6,
+    "clientId": "2",
+    "goalId": 8,
+    "milestoneType": "first_completion",
+    "message": "📊 Great job! Tracking your sleep is the first step to improving it!",
+    "achievedAt": "2024-01-20T19:00:00.000Z",
+    "displayType": "toast",
+    "viewed": true
+  },
+  {
+    "Id": 7,
+    "clientId": "2",
+    "goalId": 3,
+    "milestoneType": "3_day_streak",
+    "message": "🔥 Amazing! 3 days of avoiding screens before bed - you're building a great habit!",
+    "achievedAt": "2024-01-24T07:30:00.000Z",
+    "displayType": "modal",
+    "viewed": false
+  },
+  {
+    "Id": 8,
+    "clientId": "3",
+    "goalId": 1,
+    "milestoneType": "first_completion",
+    "message": "🎉 Great job maintaining your bedtime tonight!",
+    "achievedAt": "2024-01-19T08:00:00.000Z",
+    "displayType": "toast",
+    "viewed": true
+  },
+  {
+    "Id": 9,
+    "clientId": "3",
+    "goalId": 4,
+    "milestoneType": "first_completion", 
+    "message": "🌡️ Perfect! You've created an ideal sleep sanctuary!",
+    "achievedAt": "2024-01-20T08:30:00.000Z",
+    "displayType": "toast",
+    "viewed": true
+  },
+  {
+    "Id": 10,
+    "clientId": "4",
+    "goalId": 2,
+    "milestoneType": "first_completion",
+    "message": "🎉 Wonderful! Your first wind-down routine is complete!",
+    "achievedAt": "2024-01-18T07:45:00.000Z",
+    "displayType": "toast",
+    "viewed": true
+  }
+]

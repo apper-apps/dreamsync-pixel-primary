@@ -10,14 +10,16 @@ import { sleepEntryService } from "@/services/api/sleepEntryService"
 import { appointmentService } from "@/services/api/appointmentService"
 import { sessionService } from "@/services/api/sessionService"
 import { messageService } from "@/services/api/messageService"
+import { goalService } from "@/services/api/goalService"
 import { format, subDays } from "date-fns"
 
 const ClientDashboard = () => {
-  const [dashboardData, setDashboardData] = useState({
+const [dashboardData, setDashboardData] = useState({
     stats: null,
     recentEntries: [],
     upcomingAppointments: [],
-    recentSessions: []
+    recentSessions: [],
+    activeGoals: []
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -30,16 +32,20 @@ const ClientDashboard = () => {
       // Mock client ID - in real app this would come from auth
       const clientId = "2"
 
-      const [
+const [
         sleepEntries,
         appointments,
         sessions,
-        messages
+        messages,
+        clientGoals,
+        goalProgress
       ] = await Promise.all([
         sleepEntryService.getByClient(clientId),
         appointmentService.getByClient(clientId),
         sessionService.getByClient(clientId),
-        messageService.getAll()
+        messageService.getAll(),
+        goalService.getByClient(clientId),
+        goalService.getProgressByClient(clientId)
       ])
 
       // Calculate stats
@@ -57,9 +63,16 @@ const ClientDashboard = () => {
       const upcomingAppts = appointments.filter(a => 
         new Date(a.dateTime) > new Date() && a.status === "scheduled"
       ).length
-      const unreadMessages = messages.filter(m => 
+const unreadMessages = messages.filter(m => 
         m.receiverId === clientId && !m.read
       ).length
+
+      // Calculate goals stats
+      const activeGoalsCount = clientGoals.filter(g => g.status === 'active').length
+      const completedGoalsToday = goalProgress.filter(p => {
+        const today = new Date().toDateString()
+        return new Date(p.date).toDateString() === today && p.completed
+      }).length
 
       // Get recent data
       const recentEntries = sleepEntries
@@ -72,19 +85,41 @@ const ClientDashboard = () => {
         .slice(0, 2)
       
       const recentSessions = sessions
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, 2)
+.slice(0, 2)
 
-      setDashboardData({
+      // Get active goals with progress
+      const activeGoals = clientGoals
+        .filter(g => g.status === 'active')
+        .slice(0, 3)
+        .map(goal => {
+          const recentProgress = goalProgress
+            .filter(p => p.goalId === goal.Id)
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+          
+          const currentStreak = calculateStreak(recentProgress)
+          const completionRate = calculateCompletionRate(recentProgress)
+          
+          return {
+            ...goal,
+            currentStreak,
+            completionRate,
+            lastCompleted: recentProgress.find(p => p.completed)?.date
+          }
+        })
+
+setDashboardData({
         stats: {
           avgSleepQuality,
           totalEntries,
           upcomingAppts,
-          unreadMessages
+          unreadMessages,
+          activeGoalsCount,
+          completedGoalsToday
         },
         recentEntries,
         upcomingAppointments,
-        recentSessions
+        recentSessions,
+        activeGoals
       })
     } catch (err) {
       setError("Failed to load dashboard data")
@@ -101,7 +136,44 @@ const ClientDashboard = () => {
   if (loading) return <Loading />
   if (error) return <Error message={error} onRetry={loadDashboardData} />
 
-  const { stats, recentEntries, upcomingAppointments, recentSessions } = dashboardData
+const { stats, recentEntries, upcomingAppointments, recentSessions, activeGoals } = dashboardData
+
+  // Helper functions for goal progress
+  const calculateStreak = (progress) => {
+    if (!progress.length) return 0
+    let streak = 0
+    const today = new Date()
+    
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(today)
+      date.setDate(date.getDate() - i)
+      const dateString = date.toDateString()
+      
+      const dayProgress = progress.find(p => 
+        new Date(p.date).toDateString() === dateString
+      )
+      
+      if (dayProgress && dayProgress.completed) {
+        streak++
+      } else if (i === 0) {
+        break // No completion today breaks the streak
+      } else {
+        break
+      }
+    }
+    return streak
+  }
+
+  const calculateCompletionRate = (progress) => {
+    if (!progress.length) return 0
+    const last7Days = progress.filter(p => {
+      const date = new Date(p.date)
+      const sevenDaysAgo = subDays(new Date(), 7)
+      return date >= sevenDaysAgo
+    })
+    const completed = last7Days.filter(p => p.completed).length
+    return Math.round((completed / Math.max(last7Days.length, 7)) * 100)
+  }
 
   const getQualityColor = (quality) => {
     if (quality >= 8) return "text-green-600"
@@ -150,13 +222,74 @@ const ClientDashboard = () => {
           icon="Clock"
           iconColor="text-green-600"
         />
-        <StatCard
-          title="New Messages"
-          value={stats?.unreadMessages || 0}
-          icon="MessageSquare"
-          iconColor="text-accent-600"
+<StatCard
+          title="Active Goals"
+          value={stats?.activeGoalsCount || 0}
+          icon="Target"
+          iconColor="text-green-600"
         />
       </div>
+
+      {/* Goals Progress Quick View */}
+      {activeGoals && activeGoals.length > 0 && (
+        <Card>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold font-display text-gray-900">
+              Today's Goals Progress
+            </h3>
+            <Button variant="ghost" size="sm">
+              Check-in
+              <ApperIcon name="CheckCircle" className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {activeGoals.map((goal) => (
+              <div key={goal.Id} className="p-4 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg border border-primary-200">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <h4 className="font-medium text-gray-900 mb-1">{goal.title}</h4>
+                    <p className="text-xs text-gray-600">{goal.category}</p>
+                  </div>
+                  <div className="flex items-center space-x-1 ml-2">
+                    <ApperIcon name="Flame" className="w-4 h-4 text-orange-500" />
+                    <span className="text-sm font-bold text-orange-600">{goal.currentStreak}</span>
+                  </div>
+                </div>
+                
+                <div className="mb-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-gray-600">Progress</span>
+                    <span className="text-xs font-medium text-gray-900">{goal.completionRate}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-primary-500 to-secondary-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${goal.completionRate}%` }}
+                    ></div>
+                  </div>
+                </div>
+                
+                <Button size="sm" className="w-full">
+                  <ApperIcon name="Check" className="w-3 h-3 mr-1" />
+                  Mark Complete
+                </Button>
+              </div>
+            ))}
+          </div>
+          
+          {stats?.completedGoalsToday > 0 && (
+            <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center">
+                <ApperIcon name="CheckCircle" className="w-5 h-5 text-green-600 mr-2" />
+                <p className="text-sm text-green-800">
+                  Great job! You've completed {stats.completedGoalsToday} goal{stats.completedGoalsToday > 1 ? 's' : ''} today.
+                </p>
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -1,0 +1,186 @@
+[
+  {
+    "Id": 1,
+    "title": "Maintain Consistent Bedtime",
+    "description": "Go to bed at the same time every night, within 30 minutes of your target bedtime.",
+    "coachExplanation": "Consistency in your bedtime helps regulate your circadian rhythm, making it easier to fall asleep and wake up naturally. Your body thrives on routine, and a regular bedtime is one of the most powerful tools for improving sleep quality.",
+    "category": "Sleep Hygiene",
+    "goalType": "template",
+    "targetDate": null,
+    "dependencies": [],
+    "active": true,
+    "celebrationMilestones": [
+      {
+        "type": "first_completion",
+        "message": "🎉 Great job maintaining your bedtime tonight!"
+      },
+      {
+        "type": "week_streak", 
+        "message": "🔥 Amazing! You've maintained consistent bedtime for a full week!"
+      },
+      {
+        "type": "month_streak",
+        "message": "⭐ Incredible dedication! One month of consistent bedtime - your circadian rhythm is grateful!"
+      }
+    ],
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  {
+    "Id": 2,
+    "title": "Create Wind-Down Routine",
+    "description": "Follow a 30-45 minute relaxing routine before bed (reading, gentle stretching, meditation, etc.)",
+    "coachExplanation": "A wind-down routine signals to your brain and body that it's time to prepare for sleep. This transition period helps reduce stress hormones and activates your body's natural sleep mechanisms, leading to faster and deeper sleep.",
+    "category": "Bedtime Routine",
+    "goalType": "template", 
+    "targetDate": null,
+    "dependencies": [],
+    "active": true,
+    "celebrationMilestones": [
+      {
+        "type": "first_completion",
+        "message": "🎉 Wonderful! Your first wind-down routine is complete!"
+      },
+      {
+        "type": "week_streak",
+        "message": "🌙 Excellent! A week of consistent wind-down routines - your mind is learning to relax!"
+      }
+    ],
+    "createdAt": "2024-01-15T10:45:00.000Z",
+    "updatedAt": "2024-01-15T10:45:00.000Z"
+  },
+  {
+    "Id": 3,
+    "title": "Limit Screen Time Before Bed",
+    "description": "Avoid screens (phone, TV, computer) for at least 1 hour before bedtime.",
+    "coachExplanation": "Blue light from screens suppresses melatonin production, the hormone that helps you fall asleep. By avoiding screens before bed, you allow your natural melatonin levels to rise, making it easier to fall asleep and improving sleep quality.",
+    "category": "Sleep Hygiene",
+    "goalType": "template",
+    "targetDate": null,
+    "dependencies": [],
+    "active": true,
+    "celebrationMilestones": [
+      {
+        "type": "first_completion",
+        "message": "📱❌ Excellent choice! Your brain will thank you tonight!"
+      },
+      {
+        "type": "week_streak",
+        "message": "🧠 Fantastic! A week without screens before bed - your melatonin is flowing freely!"
+      }
+    ],
+    "createdAt": "2024-01-15T11:00:00.000Z",
+    "updatedAt": "2024-01-15T11:00:00.000Z"
+  },
+  {
+    "Id": 4,
+    "title": "Optimize Sleep Environment",
+    "description": "Ensure your bedroom is cool (65-68°F), dark, and quiet for optimal sleep conditions.",
+    "coachExplanation": "Your sleep environment plays a crucial role in sleep quality. A cool room helps your body's natural temperature drop, darkness supports melatonin production, and quiet reduces sleep disruptions. These three factors create the ideal conditions for restorative sleep.",
+    "category": "Environment",
+    "goalType": "template",
+    "targetDate": null,
+    "dependencies": [],
+    "active": true,
+    "celebrationMilestones": [
+      {
+        "type": "first_completion",
+        "message": "🌡️ Perfect! You've created an ideal sleep sanctuary!"
+      }
+    ],
+    "createdAt": "2024-01-15T11:15:00.000Z",
+    "updatedAt": "2024-01-15T11:15:00.000Z"
+  },
+  {
+    "Id": 5,
+    "title": "Morning Light Exposure",
+    "description": "Get 10-15 minutes of natural sunlight within 1 hour of waking up.",
+    "coachExplanation": "Morning light exposure helps reset your circadian rhythm and suppresses melatonin production, making you feel more alert during the day and sleepier at night. This natural light cue is essential for maintaining a healthy sleep-wake cycle.",
+    "category": "Sleep Hygiene",
+    "goalType": "template",
+    "targetDate": null,
+    "dependencies": [],
+    "active": true,
+    "celebrationMilestones": [
+      {
+        "type": "first_completion",
+        "message": "☀️ Brilliant! You've given your circadian rhythm the perfect morning signal!"
+      },
+      {
+        "type": "week_streak",
+        "message": "🌅 Outstanding! A week of morning light - your internal clock is perfectly synced!"
+      }
+    ],
+    "createdAt": "2024-01-16T09:00:00.000Z",
+    "updatedAt": "2024-01-16T09:00:00.000Z"
+  },
+  {
+    "Id": 6,
+    "title": "Practice Sleep Gratitude",
+    "description": "Before bed, write down 3 things you're grateful for from your day.",
+    "coachExplanation": "Gratitude practice shifts your mind from daily stresses to positive thoughts, reducing anxiety and promoting relaxation. This mental transition helps quiet racing thoughts and creates a peaceful mindset conducive to falling asleep easily.",
+    "category": "Mindset",
+    "goalType": "template",
+    "targetDate": null,
+    "dependencies": [2],
+    "active": true,
+    "celebrationMilestones": [
+      {
+        "type": "first_completion",
+        "message": "🙏 Beautiful! Ending your day with gratitude sets the perfect tone for peaceful sleep!"
+      },
+      {
+        "type": "week_streak",
+        "message": "✨ Wonderful! A week of gratitude practice - your mind is learning to embrace positivity before sleep!"
+      }
+    ],
+    "createdAt": "2024-01-16T09:30:00.000Z",
+    "updatedAt": "2024-01-16T09:30:00.000Z"
+  },
+  {
+    "Id": 7,
+    "title": "Limit Caffeine After 2 PM",
+    "description": "Avoid all caffeine (coffee, tea, chocolate, energy drinks) after 2:00 PM.",
+    "coachExplanation": "Caffeine has a half-life of 6-8 hours, meaning it stays in your system much longer than you might think. By cutting off caffeine after 2 PM, you ensure it won't interfere with your ability to fall asleep at bedtime, leading to more restful nights.",
+    "category": "Sleep Hygiene",
+    "goalType": "template",
+    "targetDate": null,
+    "dependencies": [],
+    "active": true,
+    "celebrationMilestones": [
+      {
+        "type": "first_completion",
+        "message": "☕ Excellent discipline! Your evening sleep will be so much better without late caffeine!"
+      },
+      {
+        "type": "week_streak",
+        "message": "⚡ Amazing! A week of smart caffeine timing - your sleep quality is definitely improving!"
+      }
+    ],
+    "createdAt": "2024-01-16T10:00:00.000Z",
+    "updatedAt": "2024-01-16T10:00:00.000Z"
+  },
+  {
+    "Id": 8,
+    "title": "Complete Sleep Diary Entry",
+    "description": "Fill out your daily sleep diary with bedtime, wake time, and sleep quality rating.",
+    "coachExplanation": "Tracking your sleep patterns helps identify what works and what doesn't in your sleep routine. This data allows us to make informed adjustments to optimize your sleep, and the act of tracking itself increases awareness of your sleep habits.",
+    "category": "Custom",
+    "goalType": "custom",
+    "targetDate": null,
+    "dependencies": [],
+    "active": true,
+    "celebrationMilestones": [
+      {
+        "type": "first_completion",
+        "message": "📊 Great job! Tracking your sleep is the first step to improving it!"
+      },
+      {
+        "type": "week_streak",
+        "message": "📈 Fantastic consistency! A week of sleep tracking - the data is showing us patterns!"
+      }
+    ],
+    "createdAt": "2024-01-17T08:00:00.000Z",
+    "updatedAt": "2024-01-17T08:00:00.000Z"
+  }
+]
