@@ -1,0 +1,128 @@
+[
+  {
+    "Id": 1,
+    "label": "Today's date",
+    "type": "time",
+    "options": null,
+    "display_order": 1,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 2,
+    "label": "Bedtime (when you got into bed last night)",
+    "type": "time",
+    "options": null,
+    "display_order": 2,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 3,
+    "label": "When you tried to sleep",
+    "type": "time",
+    "options": null,
+    "display_order": 3,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 4,
+    "label": "Approximately how long did it take you to fall asleep? (minutes)",
+    "type": "number",
+    "options": null,
+    "display_order": 4,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 5,
+    "label": "How many times do you remember waking during the night?",
+    "type": "number",
+    "options": null,
+    "display_order": 5,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 6,
+    "label": "What time was your final wakeup today?",
+    "type": "time",
+    "options": null,
+    "display_order": 6,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 7,
+    "label": "What time did you get out of bed for good today?",
+    "type": "time",
+    "options": null,
+    "display_order": 7,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 8,
+    "label": "How would you rate last night's sleep quality? (1-10 scale)",
+    "type": "scale",
+    "options": null,
+    "display_order": 8,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 9,
+    "label": "Did you take any sleep medications, aids, or supplements last night?",
+    "type": "radio",
+    "options": ["No", "Yes"],
+    "display_order": 9,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 10,
+    "label": "Did you take any naps yesterday or doze off in the evening?",
+    "type": "radio",
+    "options": ["No", "Yes"],
+    "display_order": 10,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 11,
+    "label": "Did you have any alcoholic drinks yesterday?",
+    "type": "radio",
+    "options": ["No", "Yes"],
+    "display_order": 11,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 12,
+    "label": "Did you have any caffeinated drinks yesterday?",
+    "type": "radio",
+    "options": ["No", "Yes"],
+    "display_order": 12,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 13,
+    "label": "Additional notes about your sleep (Optional)",
+    "type": "text",
+    "options": null,
+    "display_order": 13,
+    "is_active": true,
+    "logic_json": null
+  },
+  {
+    "Id": 14,
+    "label": "Daily Goals Check-in",
+    "type": "text",
+    "options": null,
+    "display_order": 14,
+    "is_active": true,
+    "logic_json": null
+  }
+]

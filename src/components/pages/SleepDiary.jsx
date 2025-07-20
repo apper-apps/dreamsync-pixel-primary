@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { eachDayOfInterval, endOfMonth, format, isSameDay, isSameMonth, isToday, startOfMonth, subDays } from "date-fns";
 import { toast } from "react-toastify";
+import { questionService } from "@/services/api/questionService";
 import ApperIcon from "@/components/ApperIcon";
 import Empty from "@/components/ui/Empty";
 import Error from "@/components/ui/Error";
@@ -12,6 +13,7 @@ import { sleepEntryService } from "@/services/api/sleepEntryService";
 
 const SleepDiary = () => {
   const [entries, setEntries] = useState([])
+  const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [view, setView] = useState("list") // "list" or "calendar"
@@ -43,8 +45,7 @@ const [formData, setFormData] = useState({
     notes: "",
     dailyGoals: ""
   })
-
-  const totalSteps = 14
+const totalSteps = questions.length
   const clientId = "2" // Mock client ID - in real app this would come from auth
   
   const initialFormData = {
@@ -63,143 +64,18 @@ const [formData, setFormData] = useState({
     notes: "",
     dailyGoals: ""
   }
-
-const questions = [
-    {
-      id: "date",
-      title: "Today's date",
-      subtitle: "When did this sleep period occur?",
-      type: "date",
-      required: true,
-      icon: "Calendar"
-    },
-    {
-      id: "bedTime",
-      title: "Bedtime (when you got into bed last night)",
-      subtitle: "What time did you get into bed last night?",
-      type: "time",
-      required: true,
-      icon: "Moon"
-    },
-    {
-      id: "tryToSleepTime",
-      title: "When you tried to sleep",
-      subtitle: "The time you actually tried to fall asleep",
-      type: "time",
-      required: true,
-      icon: "Clock"
-    },
-    {
-      id: "minutesToFallAsleep",
-      title: "Approximately how long did it take you to fall asleep? (minutes)",
-      subtitle: "Time from trying to sleep until you fell asleep",
-      type: "number",
-      min: 0,
-      max: 300,
-      required: true,
-      icon: "Timer"
-    },
-    {
-      id: "nightWakeups",
-      title: "How many times do you remember waking during the night?",
-      subtitle: "Number of times you woke up during the night",
-      type: "number",
-      min: 0,
-      max: 20,
-      required: true,
-      icon: "Eye"
-    },
-    {
-      id: "finalWakeTime",
-      title: "What time was your final wakeup today?",
-      subtitle: "The last time you woke up this morning",
-      type: "time",
-      required: true,
-      icon: "Sun"
-    },
-    {
-      id: "outOfBedTime",
-      title: "What time did you get out of bed for good today?",
-      subtitle: "When you got out of bed and stayed up",
-      type: "time",
-      required: true,
-      icon: "ArrowUp"
-    },
-    {
-      id: "sleepQuality",
-      title: "How would you rate last night's sleep quality? (1-10 scale)",
-      subtitle: "Rate your overall sleep quality from 1 (very poor) to 10 (excellent)",
-      type: "range",
-      min: 1,
-      max: 10,
-      required: true,
-      icon: "Star"
-    },
-    {
-      id: "sleepMedications",
-      title: "Did you take any sleep medications, aids, or supplements last night? (Yes/No)",
-      subtitle: "Including prescription medications, over-the-counter aids, or supplements",
-      type: "select",
-      options: [
-        { value: "no", label: "No" },
-        { value: "yes", label: "Yes" }
-      ],
-      required: true,
-      icon: "Pill"
-    },
-    {
-      id: "naps",
-      title: "Did you take any naps yesterday or doze off in the evening? (Yes/No)",
-      subtitle: "Any daytime sleep or evening dozing before bedtime",
-      type: "select",
-      options: [
-        { value: "no", label: "No" },
-        { value: "yes", label: "Yes" }
-      ],
-      required: true,
-      icon: "Moon"
-    },
-    {
-      id: "alcohol",
-      title: "Did you have any alcoholic drinks yesterday? (Yes/No)",
-      subtitle: "Any alcohol consumption during the day or evening",
-      type: "select",
-      options: [
-        { value: "no", label: "No" },
-        { value: "yes", label: "Yes" }
-      ],
-      required: true,
-      icon: "Wine"
-    },
-    {
-      id: "caffeine",
-      title: "Did you have any caffeinated drinks yesterday? (Yes/No)",
-      subtitle: "Coffee, tea, soda, energy drinks, or other caffeinated beverages",
-      type: "select",
-      options: [
-        { value: "no", label: "No" },
-        { value: "yes", label: "Yes" }
-      ],
-      required: true,
-      icon: "Coffee"
-    },
-    {
-      id: "notes",
-      title: "Additional notes about your sleep (Optional)",
-      subtitle: "Any other observations or factors that may have affected your sleep",
-      type: "textarea",
-      required: false,
-      icon: "FileText"
-    },
-    {
-      id: "dailyGoals",
-      title: "Daily Goals Check-in (placeholder text for now)",
-      subtitle: "Review your daily goals and progress",
-      type: "textarea",
-      required: false,
-      icon: "Target"
+const loadQuestions = async () => {
+    try {
+      const activeQuestions = await questionService.getAll()
+      const sortedQuestions = activeQuestions
+        .filter(q => q.is_active)
+        .sort((a, b) => a.display_order - b.display_order)
+      setQuestions(sortedQuestions)
+    } catch (err) {
+      console.error("Failed to load questions:", err)
+      setError("Failed to load diary questions")
     }
-  ]
+  }
 
 
   const loadEntries = async () => {
@@ -217,8 +93,11 @@ const questions = [
     }
   }
 
-  useEffect(() => {
-    loadEntries()
+useEffect(() => {
+    const initializeData = async () => {
+      await Promise.all([loadEntries(), loadQuestions()])
+    }
+    initializeData()
   }, [])
 
   // Save step mode preference
@@ -250,7 +129,7 @@ const handleInputChange = (e) => {
   }
 
   const validateCurrentStep = () => {
-    if (!isStepMode) return true
+    if (!isStepMode || questions.length === 0) return true
     
     const question = questions[currentStep - 1]
     const value = formData[question.id]
@@ -278,7 +157,6 @@ const handleInputChange = (e) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    // Validate required fields
     const requiredFields = questions.filter(q => q.required)
     for (const field of requiredFields) {
       if (!formData[field.id] || formData[field.id] === "") {
@@ -307,7 +185,8 @@ const handleInputChange = (e) => {
       } else {
         await sleepEntryService.create(entryData)
         toast.success("Sleep entry added successfully")
-}
+      }
+      
       resetForm()
       loadEntries()
     } catch (err) {
@@ -503,14 +382,14 @@ const resetForm = () => {
     )
   }
 
-  const renderQuestion = (question, index) => {
+const renderQuestion = (question, index) => {
     const value = formData[question.id]
     
     return (
       <div key={question.id} className="space-y-4">
         <div className="text-center">
           <div className="bg-gradient-to-br from-primary-100 to-secondary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <ApperIcon name={question.icon} className="w-8 h-8 text-primary-600" />
+            <ApperIcon name={question.icon || "HelpCircle"} className="w-8 h-8 text-primary-600" />
           </div>
           <h3 className="text-xl font-semibold font-display text-gray-900 mb-2">
             {question.title}
@@ -527,32 +406,29 @@ const resetForm = () => {
             <input
               type="range"
               name={question.id}
-              min={question.min}
-              max={question.max}
-              value={value}
+              min={question.min || 1}
+              max={question.max || 10}
+              value={value || 5}
               onChange={handleInputChange}
-              className="sleep-quality-slider w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
             />
             <div className="flex justify-between text-xs text-gray-500 mt-2">
-              <span>Very Poor</span>
               <span>Poor</span>
-              <span>Fair</span>
-              <span>Good</span>
               <span>Excellent</span>
             </div>
           </div>
-) : question.type === "select" ? (
+        ) : question.type === "select" && question.options ? (
           <div className="max-w-md mx-auto">
             <select
               name={question.id}
-              value={value}
+              value={value || ""}
               onChange={handleInputChange}
-              required={question.required}
               className="w-full px-4 py-3 text-center text-lg border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
-              {question.options.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
+              <option value="">Select an option</option>
+              {question.options && question.options.map((option, idx) => (
+                <option key={idx} value={option.value || option}>
+                  {option.label || option}
                 </option>
               ))}
             </select>
@@ -561,26 +437,21 @@ const resetForm = () => {
           <div className="max-w-md mx-auto">
             <textarea
               name={question.id}
-              value={value}
+              value={value || ""}
               onChange={handleInputChange}
-              required={question.required}
               rows={3}
               className="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder={question.required ? "Required field" : "Optional notes..."}
+              placeholder="Enter your response..."
             />
           </div>
         ) : (
           <div className="max-w-md mx-auto">
             <Input
               name={question.id}
-              type={question.type}
-              value={value}
+              type={question.type || "text"}
+              value={value || ""}
               onChange={handleInputChange}
-              required={question.required}
-              min={question.min}
-              max={question.max}
               className="text-center text-lg"
-              placeholder={question.type === "number" ? "Enter number" : ""}
             />
           </div>
         )}
@@ -591,14 +462,9 @@ const resetForm = () => {
   const renderStepForm = () => (
     <Card>
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-4">
-          <h3 className="text-lg font-semibold font-display text-gray-900">
-            {editingEntry ? "Edit Sleep Entry" : "Add Sleep Entry"}
-          </h3>
-          <div className="text-sm text-gray-500">
-            Step {currentStep} of {totalSteps}
-          </div>
-        </div>
+        <h3 className="text-lg font-semibold font-display text-gray-900">
+          {editingEntry ? "Edit Sleep Entry" : "Add Sleep Entry"}
+        </h3>
         <Button 
           variant="ghost" 
           size="sm"
@@ -623,7 +489,7 @@ const resetForm = () => {
       </div>
       
       <form onSubmit={handleSubmit}>
-        {renderQuestion(questions[currentStep - 1], currentStep - 1)}
+        {questions.length > 0 && questions[currentStep - 1] && renderQuestion(questions[currentStep - 1], currentStep - 1)}
         
         <div className="flex justify-between mt-8">
           <Button
@@ -660,7 +526,7 @@ const resetForm = () => {
     </Card>
   )
 
-  const renderAllQuestionsForm = () => (
+const renderAllQuestionsForm = () => (
     <Card>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold font-display text-gray-900">
@@ -675,21 +541,21 @@ const resetForm = () => {
         </Button>
       </div>
       
-<form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {questions.map((question, index) => (
             <div key={question.id}>
               {question.type === "range" ? (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {question.title}: {formData[question.id]}/10
+                    {question.title}: {formData[question.id] || 5}/10
                   </label>
                   <input
                     type="range"
                     name={question.id}
-                    min={question.min}
-                    max={question.max}
-                    value={formData[question.id]}
+                    min={question.min || 1}
+                    max={question.max || 10}
+                    value={formData[question.id] || 5}
                     onChange={handleInputChange}
                     className="sleep-quality-slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   />
@@ -698,21 +564,21 @@ const resetForm = () => {
                     <span>Excellent</span>
                   </div>
                 </div>
-              ) : question.type === "select" ? (
+              ) : question.type === "select" && question.options ? (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     {question.title}
                   </label>
                   <select
                     name={question.id}
-                    value={formData[question.id]}
+                    value={formData[question.id] || ""}
                     onChange={handleInputChange}
-                    required={question.required}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
-                    {question.options.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
+                    <option value="">Select an option</option>
+                    {question.options && question.options.map((option, idx) => (
+                      <option key={idx} value={option.value || option}>
+                        {option.label || option}
                       </option>
                     ))}
                   </select>
@@ -724,36 +590,38 @@ const resetForm = () => {
                   </label>
                   <textarea
                     name={question.id}
-                    value={formData[question.id]}
+                    value={formData[question.id] || ""}
                     onChange={handleInputChange}
-                    required={question.required}
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder={question.required ? "Required field" : "Optional notes..."}
+                    placeholder="Enter your response..."
                   />
                 </div>
               ) : (
-                <Input
-                  label={question.title}
-                  name={question.id}
-                  type={question.type}
-                  value={formData[question.id]}
-                  onChange={handleInputChange}
-                  required={question.required}
-                  min={question.min}
-                  max={question.max}
-                />
+                <div>
+                  <Input
+                    label={question.title}
+                    name={question.id}
+                    type={question.type || "text"}
+                    value={formData[question.id] || ""}
+                    onChange={handleInputChange}
+                  />
+                </div>
               )}
             </div>
           ))}
         </div>
-        <div className="flex space-x-3">
-          <Button type="submit" className="flex-1 bg-gradient-to-r from-primary-600 to-secondary-600">
+        
+        <div className="flex justify-end space-x-3">
+          <Button
+            type="submit"
+            className="bg-gradient-to-r from-primary-600 to-secondary-600"
+          >
             <ApperIcon name="Save" className="w-4 h-4 mr-2" />
             {editingEntry ? "Update Entry" : "Save Entry"}
           </Button>
           <Button 
-            type="button" 
+            type="button"
             variant="secondary"
             onClick={resetForm}
           >
@@ -763,7 +631,6 @@ const resetForm = () => {
       </form>
     </Card>
   )
-
   if (loading) return <Loading />
   if (error) return <Error message={error} onRetry={loadEntries} />
 

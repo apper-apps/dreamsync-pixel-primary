@@ -10,6 +10,7 @@ import ClientManagement from "@/components/pages/ClientManagement"
 import CoachSchedule from "@/components/pages/CoachSchedule"
 import CoachMessages from "@/components/pages/CoachMessages"
 import CoachSessionNotes from "@/components/pages/CoachSessionNotes"
+import QuestionsManagement from "@/components/pages/QuestionsManagement"
 import CoachResources from "@/components/pages/CoachResources"
 
 // Client Pages
@@ -62,8 +63,9 @@ function App() {
               <Route path="/dashboard" element={<CoachDashboard />} />
               <Route path="/clients" element={<ClientManagement />} />
               <Route path="/schedule" element={<CoachSchedule />} />
-              <Route path="/messages" element={<CoachMessages />} />
+<Route path="/messages" element={<CoachMessages />} />
               <Route path="/notes" element={<CoachSessionNotes />} />
+              <Route path="/questions" element={<QuestionsManagement />} />
               <Route path="/resources" element={<CoachResources />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </>

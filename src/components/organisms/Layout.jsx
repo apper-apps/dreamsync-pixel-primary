@@ -11,8 +11,9 @@ const Layout = ({ children, currentUser, onLogout }) => {
         { href: "/dashboard", label: "Dashboard", icon: "BarChart3" },
         { href: "/clients", label: "Client Management", icon: "Users" },
         { href: "/schedule", label: "Schedule", icon: "Calendar" },
-        { href: "/messages", label: "Messages", icon: "MessageSquare" },
+{ href: "/messages", label: "Messages", icon: "MessageSquare" },
         { href: "/notes", label: "Session Notes", icon: "FileText" },
+        { href: "/questions", label: "Questions", icon: "HelpCircle" },
         { href: "/resources", label: "Resources", icon: "Library" },
       ]
     } else {
